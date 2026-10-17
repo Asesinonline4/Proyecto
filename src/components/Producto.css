@@ -1,0 +1,20 @@
+.producto {
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.986);
+  padding: 10px;
+  background-color: hsl(0, 40%, 40%);
+  border-radius: 0.5rem;
+  line-height: 1.5;
+  text-align: center;
+  transition: transform 0.3s ease-in-out;
+}
+
+.producto:hover {
+  transform: scale(1.04);
+  transition: transform 0.3s ease-in-out;
+}
+
+.producto img {
+  width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+}

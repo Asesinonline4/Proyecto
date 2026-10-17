@@ -1,0 +1,34 @@
+.logo-carrito {
+  align-items: center;
+  display: flex;
+  position: relative;
+}
+
+.cart-icon {
+  font-size: 1.5rem;
+  color: #333;
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.cart-icon:hover {
+  color: #007bff;
+  transform: scale(1.1);
+}
+
+.cart-icon:active {
+  transform: translateY(-1px);
+}
+
+.cart-count {
+  background-color: #ff0000;
+  color: #fff;
+  border-radius: 50%;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.8rem;
+  position: absolute;
+  top: -10px;
+  right: -10px;
+}

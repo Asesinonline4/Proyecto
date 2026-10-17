@@ -1,0 +1,32 @@
+[
+    {
+        "id": 1,
+        "nombre": "Apple AirPods 4",
+        "precio": 129.99,
+        "imagen": "/images/airpods4.png"
+    },
+    {
+        "id": 2,
+        "nombre": "Sony WH-1000XM5",
+        "precio": 399.99,
+        "imagen": "/images/sonywh.avif"
+    },
+    {
+        "id": 3,
+        "nombre": "Nintendo Switch OLED",
+        "precio": 349.99,
+        "imagen": "/images/nintendooled.webp"
+    },
+    {
+        "id": 4,
+        "nombre": "Samsung Galaxy S23",
+        "precio": 799.99,
+        "imagen": "/images/samsungs23.png"
+    },
+    {
+        "id": 5,
+        "nombre": "Apple MacBook Pro 16\"",
+        "precio": 2499.99,
+        "imagen": "/images/macbook16.png"
+    }
+]

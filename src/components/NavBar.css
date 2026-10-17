@@ -1,0 +1,20 @@
+.navbar {
+  background: linear-gradient(to right, #ff7e5f, #feb47b);
+  display: flex;
+  justify-content: space-evenly;
+  padding: 1rem;
+  align-items: center;
+  z-index: 100;
+  top: 0;
+  position: fixed;
+  width: 100%;
+}
+
+.navbar-links li {
+  list-style: none;
+}
+
+.navbar-links a {
+  text-decoration: none;
+  color: blue;
+}
