@@ -3,30 +3,40 @@
         "id": 1,
         "nombre": "Apple AirPods 4",
         "precio": 129.99,
-        "imagen": "/images/airpods4.png"
+        "imagen": "/images/airpods4.png",
+        "descripcion": "Audífonos inalámbricos última generación, cancelación de ruido.",
+        "stock": 15
     },
     {
         "id": 2,
         "nombre": "Sony WH-1000XM5",
         "precio": 399.99,
-        "imagen": "/images/sonywh.avif"
+        "imagen": "/images/sonywh.avif",
+        "descripcion": "Audífonos de cancelación de ruido de alta calidad.",
+        "stock": 10
     },
     {
         "id": 3,
         "nombre": "Nintendo Switch OLED",
         "precio": 349.99,
-        "imagen": "/images/nintendooled.webp"
+        "imagen": "/images/nintendooled.webp",
+        "descripcion": "Consola de videojuegos con pantalla OLED.",
+        "stock": 20
     },
     {
         "id": 4,
         "nombre": "Samsung Galaxy S23",
         "precio": 799.99,
-        "imagen": "/images/samsungs23.png"
+        "imagen": "/images/samsungs23.png",
+        "descripcion": "Teléfono inteligente de última generación.",
+        "stock": 25
     },
     {
         "id": 5,
         "nombre": "Apple MacBook Pro 16\"",
         "precio": 2499.99,
-        "imagen": "/images/macbook16.png"
+        "imagen": "/images/macbook16.png",
+        "descripcion": "Computadora portátil de alta gama.",
+        "stock": 0
     }
 ]
