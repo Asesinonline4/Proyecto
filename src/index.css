@@ -12,6 +12,6 @@ html {
 
 body {
   font-family: sans-serif;
-  background-color: gray;
+  background: linear-gradient(to bottom, #f0f0f0, #696969);
   min-height: 100vh;
 }

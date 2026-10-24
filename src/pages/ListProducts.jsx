@@ -1,21 +1,13 @@
 import './ListProducts.css'
 import Producto from "../components/Producto.jsx"
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect } from "react"
 import FiltroYOrden from "../components/FiltroYOrden.jsx"
-
-const CATEGORIAS = ["beauty", "fragrances", "furniture", "groceries"]
-const ORDENES = {
-  "nombre": (a, b) => a.title.localeCompare(b.title),
-  "precio": (a, b) => a.price - b.price,
-  "stock": (a, b) => a.stock - b.stock
-}
 
 export default function ListProducts() {
     const [productos, setProductos] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
-    const [ordenarPor, setOrdenarPor] = useState("nombre") // Estado para el criterio de ordenamiento
-    const [filtroCategoria, setFiltroCategoria] = useState("") // Estado para el filtro de categoría
+    const [productosFiltrados, setProductosFiltrados] = useState([])
 
     useEffect(() => {
         // llamamos a la api para obtener los productos //
@@ -30,23 +22,11 @@ export default function ListProducts() {
             .finally(() => setLoading(false))
     }, [])
 
-    const productosOrdenados = useMemo(() => {
-        const productosFiltrados = filtroCategoria
-            ? productos.filter(producto => producto.category === filtroCategoria)
-            : productos;
-        const comparador = ORDENES[ordenarPor] ?? ORDENES.nombre;
-        return [...productosFiltrados].sort(comparador);
-    }, [productos, ordenarPor, filtroCategoria]);
-
     return (
       <>        
         <FiltroYOrden
-            ordenarPor={ordenarPor}
-            setOrdenarPor={setOrdenarPor}
-            filtroCategoria={filtroCategoria}
-            setFiltroCategoria={setFiltroCategoria}
-            categorias={CATEGORIAS}
-            ordenes={ORDENES}
+            productos={productos}
+            setProductos={setProductosFiltrados}
         />
         <div className="list-products">
           {loading ? (
@@ -54,7 +34,7 @@ export default function ListProducts() {
           ) : error ? (
             <p>Error al cargar productos.</p>
           ) : (
-            productosOrdenados.map((producto) => (
+            productosFiltrados.map((producto) => (
               <Producto 
                 key={producto.id}
                 nombre={producto.title}
