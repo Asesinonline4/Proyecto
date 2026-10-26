@@ -37,6 +37,7 @@ export default function ListProducts() {
             productosFiltrados.map((producto) => (
               <Producto 
                 key={producto.id}
+                id={producto.id}
                 nombre={producto.title}
                 precio={producto.price}
                 imagen={producto.images}

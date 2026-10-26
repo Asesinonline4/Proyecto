@@ -90,3 +90,10 @@
   transform: none;
   transition: none;
 }
+
+.producto-enlace {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  cursor: pointer;
+}

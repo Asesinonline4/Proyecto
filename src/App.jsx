@@ -2,6 +2,7 @@ import Navbar from './components/NavBar.jsx'
 import ListProducts from './pages/ListProducts.jsx'
 import { Route, Routes, BrowserRouter } from 'react-router-dom'
 import Compras from './pages/Compras.jsx'
+import Producto from './pages/Producto.jsx'
 
 export default function App() {
   return (
@@ -11,6 +12,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<ListProducts />} />
             <Route path="/carrito" element={<Compras />} />
+            <Route path='/producto/:id' element={<Producto />} />
           </Routes>
         </div>
       </BrowserRouter>
