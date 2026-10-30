@@ -3,9 +3,11 @@ import ListProducts from './pages/ListProducts.jsx'
 import { Route, Routes, BrowserRouter } from 'react-router-dom'
 import Compras from './pages/Compras.jsx'
 import Producto from './pages/Producto.jsx'
+import CartProvider from './Hooks/Contextos/CartProvider.jsx'
 
 export default function App() {
   return (
+    <CartProvider>
       <BrowserRouter>
         <div style={{ paddingTop: '4rem' }}>
           <Navbar />
@@ -16,5 +18,6 @@ export default function App() {
           </Routes>
         </div>
       </BrowserRouter>
+    </CartProvider>
   )
 }

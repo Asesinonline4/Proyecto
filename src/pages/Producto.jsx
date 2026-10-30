@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import { useParams, Link } from "react-router-dom"
+import { CartContext } from "../Hooks/Contextos/CartProvider.jsx"
 import './Producto.css'
 
 export default function Producto() {
     const { id } = useParams()
+    const { addToCart } = useContext(CartContext)
 
     const [resultado, setResultado] = useState({ id: null, producto: null, error: null })
     const loading = resultado.id !== id
@@ -60,6 +62,8 @@ export default function Producto() {
     }
 
     const handleAgregarCarrito = () => {
+        if (!producto || producto.stock <= 0) return
+        addToCart(producto, cantidad)
         setAgregadoMensaje(true)
         setTimeout(() => setAgregadoMensaje(false), 3000)
     }

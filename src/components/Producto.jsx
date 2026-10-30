@@ -1,19 +1,21 @@
 import "./Producto.css"
-import { useState } from "react"
+import { useContext } from "react"
 import { Link } from "react-router-dom"
+import { CartContext } from "../Hooks/Contextos/CartProvider.jsx"
 
 export default function Producto({ id, nombre, precio, imagen, descripcion, stock }) {
-    const [cantidad, setCantidad] = useState(0)
+    const { cart, addToCart, decreaseFromCart } = useContext(CartContext)
 
-    const handleCantidadChange = (cambio) => {
-        setCantidad((cantidadActual) => {
-            const nuevaCantidad = cantidadActual + cambio
+    // Obtenemos la cantidad de este producto directamente del estado global del carrito
+    const itemEnCarrito = cart.find((item) => item.id === id)
+    const cantidad = itemEnCarrito ? itemEnCarrito.quantity : 0
 
-            if (nuevaCantidad < 0) return 0
-            if (nuevaCantidad > stock) return stock
+    const agregarAlCarrito = () => {
+        addToCart({ id, nombre, precio, imagen, descripcion, stock }, 1)
+    }
 
-            return nuevaCantidad
-        })
+    const sacarDelCarrito = () => {
+        decreaseFromCart(id)
     }
 
     const imagenSrc = Array.isArray(imagen) ? imagen[0] : imagen
@@ -29,15 +31,17 @@ export default function Producto({ id, nombre, precio, imagen, descripcion, stoc
             <p className="stock">Stock: {stock}</p>
             <div className="cantidad">
                 <button
-                    onClick={() => handleCantidadChange(-1)}
+                    onClick={sacarDelCarrito}
                     disabled={cantidad === 0}
                     type="button"
+                    aria-label="Disminuir cantidad"
                 >-</button>
                 <span>{cantidad}</span>
                 <button
-                    onClick={() => handleCantidadChange(1)}
-                    disabled={cantidad >= stock}
+                    onClick={agregarAlCarrito}
+                    disabled={cantidad >= stock || stock <= 0}
                     type="button"
+                    aria-label="Aumentar cantidad"
                 >+</button>
             </div>
         </div>
