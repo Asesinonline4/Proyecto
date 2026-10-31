@@ -93,13 +93,12 @@ export default function Compras() {
                         <span className="total-monto">${totalPrice.toFixed(2)}</span>
                     </div>
 
-                    <button 
-                        className="btn-checkout" 
-                        onClick={() => alert("¡Gracias por tu compra simulada!")}
-                        type="button"
+                    <Link 
+                        to="/checkout" 
+                        className="btn-checkout"
                     >
                         Iniciar Compra
-                    </button>
+                    </Link>
 
                     <button 
                         className="btn-vaciar" 

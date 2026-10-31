@@ -198,6 +198,9 @@
 }
 
 .btn-checkout {
+  display: block;
+  text-align: center;
+  text-decoration: none;
   background: linear-gradient(135deg, #0084ff, #0056b3);
   color: white;
   border: none;

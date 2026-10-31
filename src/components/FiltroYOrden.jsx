@@ -1,101 +1,141 @@
 import "./FiltroYOrden.css"
-import { useEffect, useMemo, useState } from "react"
+import { useState, useEffect } from "react"
 
-const CATEGORIAS = ["beauty", "fragrances", "furniture", "groceries"]
-const ORDENES = {
-    "nombre": (a, b) => a.title.localeCompare(b.title),
-    "precio ascendente": (a, b) => a.price - b.price,
-    "precio descendente": (a, b) => b.price - a.price,
-    "stock": (a, b) => b.stock - a.stock
-}
+const ORDENES = [
+    { id: "por defecto", label: "Por defecto" },
+    { id: "nombre", label: "Nombre" },
+    { id: "precio ascendente", label: "Precio ascendente" },
+    { id: "precio descendente", label: "Precio descendente" },
+    { id: "stock", label: "Stock" }
+]
 
-export default function FiltroYOrden({ productos, setProductos }) {
-    const [ordenarPor, setOrdenarPor] = useState("nombre") // Estado para el criterio de ordenamiento
-    const [filtroCategoria, setFiltroCategoria] = useState("") // Estado para el filtro de categoría
-    const [filtroPrecioMin, setFiltroPrecioMin] = useState("") // Estado para el filtro de precio mínimo
-    const [filtroPrecioMax, setFiltroPrecioMax] = useState("") // Estado para el filtro de precio máximo
-    const [filtroStock, setFiltroStock] = useState("") // Estado para el filtro de stock
+export default function FiltroYOrden({ filtros, onFiltroChange }) {
+    const [categorias, setCategorias] = useState([])
+    const [loadingCategorias, setLoadingCategorias] = useState(true)
 
-    const productosFiltrados = useMemo(() => {
-        return productos.filter(producto => {
-            const coincideCategoria = !filtroCategoria || producto.category === filtroCategoria;
-            const coincidePrecioMinimo = filtroPrecioMin === "" || producto.price >= Number(filtroPrecioMin);
-            const coincidePrecioMaximo = filtroPrecioMax === "" || producto.price <= Number(filtroPrecioMax);
-            const coincideStock = !filtroStock ||
-                (filtroStock === "en stock" && producto.stock > 0) ||
-                (filtroStock === "sin stock" && producto.stock <= 0);
-
-            return coincideCategoria && coincidePrecioMinimo && coincidePrecioMaximo && coincideStock;
-        });
-    }, [productos, filtroCategoria, filtroPrecioMin, filtroPrecioMax, filtroStock]);
-
-    const productosOrdenados = useMemo(() => {
-        const comparador = ORDENES[ordenarPor] || ORDENES.nombre;
-        return [...productosFiltrados].sort(comparador);
-    }, [productosFiltrados, ordenarPor]);
-
+    // Cargamos todas las categorías directamente de la API de DummyJSON
     useEffect(() => {
-        const sinCambios = productos.length === productosOrdenados.length &&
-            productos.every((producto, indice) => producto === productosOrdenados[indice]);
+        let isMounted = true
 
-        if (!sinCambios) {
-            setProductos(productosOrdenados);
+        fetch("https://dummyjson.com/products/categories")
+            .then((res) => {
+                if (!res.ok) throw new Error("Error al obtener categorías")
+                return res.json()
+            })
+            .then((data) => {
+                if (!isMounted) return
+
+                if (Array.isArray(data)) {
+                    // La API devuelve un array de objetos [{ slug, name, url }]
+                    // o strings según la versión; normalizamos a { slug, name }
+                    const lista = data.map((item) => {
+                        if (typeof item === "object" && item !== null) {
+                            return {
+                                slug: item.slug || item.name,
+                                name: item.name || item.slug
+                            }
+                        }
+                        return {
+                            slug: String(item),
+                            name: String(item).charAt(0).toUpperCase() + String(item).slice(1)
+                        }
+                    })
+                    setCategorias(lista)
+                }
+            })
+            .catch((error) => {
+                console.error("Error cargando categorías:", error)
+            })
+            .finally(() => {
+                if (isMounted) setLoadingCategorias(false)
+            })
+
+        return () => {
+            isMounted = false
         }
-    }, [productos, productosOrdenados, setProductos]);
+    }, [])
+
+    const handleOrdenarChange = (event) => {
+        onFiltroChange("ordenarPor", event.target.value)
+    }
+
+    const handleCategoriaChange = (event) => {
+        onFiltroChange("categoria", event.target.value)
+    }
 
     const handlePrecioMinChange = (event) => {
-        setFiltroPrecioMin(event.target.value)
+        onFiltroChange("precioMin", event.target.value)
     }
 
     const handlePrecioMaxChange = (event) => {
-        setFiltroPrecioMax(event.target.value)
+        onFiltroChange("precioMax", event.target.value)
     }
 
     const handleStockChange = (event) => {
-        setFiltroStock(event.target.value)
-    }
-    
-    const handleOrdenarChange = (event) => {
-        setOrdenarPor(event.target.value)
+        onFiltroChange("stock", event.target.value)
     }
 
-    const handleFiltroChange = (event) => {
-        setFiltroCategoria(event.target.value)
-    }
     return (
         <div className="filtro-orden">
-            {/* ordenamiento */}
+            {/* Ordenamiento */}
             <div className="orden ordenar-por">
                 <label htmlFor="ordenar">Ordenar por:</label>
-                <select id="ordenar" value={ordenarPor} onChange={handleOrdenarChange}>
-                    {Array.from(Object.keys(ORDENES)).map((orden) => (
-                        <option key={orden} value={orden}>
-                            {orden.charAt(0).toUpperCase() + orden.slice(1)}
+                <select 
+                    id="ordenar" 
+                    value={filtros.ordenarPor} 
+                    onChange={handleOrdenarChange}
+                >
+                    {ORDENES.map((orden) => (
+                        <option key={orden.id} value={orden.id}>
+                            {orden.label}
                         </option>
                     ))}
                 </select>
             </div>
+
             {/* Filtro de categoría */}
             <div className="orden filtro-categoria">
                 <label htmlFor="categoria">Filtrar por categoría:</label>
-                <select id="categoria" value={filtroCategoria} onChange={handleFiltroChange}>
-                    <option value="">Todas las categorías</option>
-                    {CATEGORIAS.map((categoria) => (
-                        <option key={categoria} value={categoria}>
-                            {categoria.charAt(0).toUpperCase() + categoria.slice(1)}
+                <select 
+                    id="categoria" 
+                    value={filtros.categoria} 
+                    onChange={handleCategoriaChange}
+                >
+                    <option value="">
+                        {loadingCategorias ? "Cargando categorías..." : "Todas las categorías"}
+                    </option>
+                    {categorias.map((cat) => (
+                        <option key={cat.slug} value={cat.slug}>
+                            {cat.name}
                         </option>
                     ))}
                 </select>
             </div>
-            {/* rango de precios */}
+
+            {/* Rango de precios */}
             <div className="orden filtro-precio">
-                <input type="number" placeholder="Precio mínimo" value={filtroPrecioMin} onChange={handlePrecioMinChange} />
-                <input type="number" placeholder="Precio máximo" value={filtroPrecioMax} onChange={handlePrecioMaxChange} />
+                <input 
+                    type="number" 
+                    placeholder="Precio mínimo" 
+                    value={filtros.precioMin} 
+                    onChange={handlePrecioMinChange} 
+                />
+                <input 
+                    type="number" 
+                    placeholder="Precio máximo" 
+                    value={filtros.precioMax} 
+                    onChange={handlePrecioMaxChange} 
+                />
             </div>
+
             {/* Filtro por stock */}
             <div className="orden filtro-stock">
                 <label htmlFor="stock">Filtrar por stock:</label>
-                <select id="stock" value={filtroStock} onChange={handleStockChange}>
+                <select 
+                    id="stock" 
+                    value={filtros.stock} 
+                    onChange={handleStockChange}
+                >
                     <option value="">Todos los stocks</option>
                     <option value="en stock">En stock</option>
                     <option value="sin stock">Sin stock</option>
