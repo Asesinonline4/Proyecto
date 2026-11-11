@@ -39,15 +39,25 @@ export default function Producto() {
         return () => controller.abort()
     }, [id])
 
-    const imagenes = producto?.images && producto.images.length > 0 
-        ? producto.images 
+    // Garantizamos la lista de imágenes reuniendo images y thumbnail (sin duplicados)
+    const listaImagenes = []
+    if (Array.isArray(producto?.images)) {
+        listaImagenes.push(...producto.images)
+    }
+    if (producto?.thumbnail && !listaImagenes.includes(producto.thumbnail)) {
+        listaImagenes.push(producto.thumbnail)
+    }
+    const imagenes = listaImagenes.length > 0 
+        ? listaImagenes 
         : (producto?.thumbnail ? [producto.thumbnail] : [])
 
     const anteriorImagen = () => {
+        if (imagenes.length <= 1) return
         setImagenActual((prev) => (prev === 0 ? imagenes.length - 1 : prev - 1))
     }
 
     const siguienteImagen = () => {
+        if (imagenes.length <= 1) return
         setImagenActual((prev) => (prev === imagenes.length - 1 ? 0 : prev + 1))
     }
 
@@ -99,15 +109,18 @@ export default function Producto() {
                 {/* SECCIÓN DEL CARRUSEL */}
                 <div className="carrusel-contenedor">
                     <div className="carrusel-visor">
-                        {imagenes.length > 1 && (
-                            <button 
-                                className="carrusel-btn prev" 
-                                onClick={anteriorImagen}
-                                aria-label="Imagen anterior"
-                            >
-                                &#10094;
-                            </button>
-                        )}
+                        {/* Botón Imagen Anterior (Siempre visible con SVG nítido) */}
+                        <button 
+                            className="carrusel-btn prev" 
+                            onClick={anteriorImagen}
+                            disabled={imagenes.length <= 1}
+                            aria-label="Imagen anterior"
+                            type="button"
+                        >
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <polyline points="15 18 9 12 15 6"></polyline>
+                            </svg>
+                        </button>
 
                         <img 
                             src={imagenes[imagenActual] || producto.thumbnail} 
@@ -115,17 +128,21 @@ export default function Producto() {
                             className="carrusel-imagen-principal"
                         />
 
-                        {imagenes.length > 1 && (
-                            <button 
-                                className="carrusel-btn next" 
-                                onClick={siguienteImagen}
-                                aria-label="Siguiente imagen"
-                            >
-                                &#10095;
-                            </button>
-                        )}
+                        {/* Botón Siguiente Imagen (Siempre visible con SVG nítido) */}
+                        <button 
+                            className="carrusel-btn next" 
+                            onClick={siguienteImagen}
+                            disabled={imagenes.length <= 1}
+                            aria-label="Siguiente imagen"
+                            type="button"
+                        >
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </button>
 
-                        {imagenes.length > 1 && (
+                        {/* Badge Contador */}
+                        {imagenes.length > 0 && (
                             <div className="carrusel-badge-contador">
                                 {imagenActual + 1} / {imagenes.length}
                             </div>
@@ -133,7 +150,7 @@ export default function Producto() {
                     </div>
 
                     {/* MINIATURAS */}
-                    {imagenes.length > 1 && (
+                    {imagenes.length > 0 && (
                         <div className="carrusel-miniaturas">
                             {imagenes.map((imgUrl, index) => (
                                 <button
@@ -141,6 +158,7 @@ export default function Producto() {
                                     className={`miniatura-item ${index === imagenActual ? "activa" : ""}`}
                                     onClick={() => setImagenActual(index)}
                                     type="button"
+                                    aria-label={`Ver imagen ${index + 1}`}
                                 >
                                     <img src={imgUrl} alt={`Miniatura ${index + 1}`} />
                                 </button>
@@ -194,6 +212,7 @@ export default function Producto() {
                                 onClick={() => handleCantidadChange(-1)} 
                                 disabled={cantidad <= 1 || producto.stock <= 0}
                                 type="button"
+                                aria-label="Restar unidad"
                             >
                                 -
                             </button>
@@ -202,6 +221,7 @@ export default function Producto() {
                                 onClick={() => handleCantidadChange(1)} 
                                 disabled={cantidad >= producto.stock || producto.stock <= 0}
                                 type="button"
+                                aria-label="Sumar unidad"
                             >
                                 +
                             </button>
